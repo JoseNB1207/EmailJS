@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Suscríbete - Nexo Digital</title>
+
+    <!-- Librería EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@5/dist/email.min.js"></script>
+
+    <style>
+
+        /* CONFIGURACIÓN GENERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* CONTENEDOR */
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        /* LOGO */
+        .logo {
+            color: #1e3a8a;
+            font-size: 27px;
+            margin-bottom: 15px;
+        }
+
+        /* TÍTULO */
+        h2 {
+            color: #172554;
+            margin-bottom: 15px;
+        }
+
+        /* DESCRIPCIÓN */
+        .description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* CAMPO EMAIL */
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
+
+        /* BOTÓN */
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* MENSAJE DE RESPUESTA */
+        #mensaje {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* CONSENTIMIENTO */
+        .consentimiento {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- LOGO -->
+        <h1 class="logo">NEXO DIGITAL</h1>
+
+        <!-- TÍTULO -->
+        <h2>¡Únete a nuestra comunidad!</h2>
+
+        <!-- DESCRIPCIÓN -->
+        <p class="description">
+            Recibe novedades tecnológicas, recursos de programación
+            y herramientas digitales directamente en tu correo.
+        </p>
+
+        <!-- FORMULARIO DE SUSCRIPCIÓN -->
+        <form id="formulario">
+
+            <!-- ÚNICO CAMPO: EMAIL -->
+            <input
+                type="email"
+                name="user_email"
+                placeholder="Ingresa tu correo electrónico"
+                autocomplete="email"
+                required
+            >
+
+            <!-- AVISO DE SUSCRIPCIÓN -->
+            <p class="consentimiento">
+                Al suscribirte, aceptas recibir novedades y contenido
+                de Nexo Digital. Podrás solicitar dejar de recibirlos.
+            </p>
+
+            <!-- BOTÓN DE ENVÍO -->
+            <button type="submit" id="boton">
+                SUSCRIBIRME
+            </button>
+
+        </form>
+
+        <!-- MENSAJE DE RESPUESTA -->
+        <p id="mensaje" role="status" aria-live="polite"></p>
+
+    </div>
+
+
+    <!-- JAVASCRIPT Y CONEXIÓN CON EMAILJS -->
+    <script>
+
+        // =====================================
+        // 1. INICIALIZAR EMAILJS
+        // =====================================
+
+        emailjs.init({
+            publicKey: "zrsasD1fl6IjwR5v7"
+        });
+
+
+        // =====================================
+        // 2. OBTENER ELEMENTOS DEL HTML
+        // =====================================
+
+        const formulario = document.getElementById("formulario");
+
+        const mensaje = document.getElementById("mensaje");
+
+        const boton = document.getElementById("boton");
+
+
+        // =====================================
+        // 3. EVENTO DE ENVÍO DEL FORMULARIO
+        // =====================================
+
+        formulario.addEventListener("submit", function(event) {
+
+            // Evitar que la página se recargue
+            event.preventDefault();
+
+            // Desactivar botón mientras se procesa
+            boton.disabled = true;
+
+            boton.textContent = "PROCESANDO...";
+
+            mensaje.textContent = "";
+
+
+            // =====================================
+            // 4. ENVIAR CORREO CON EMAILJS
+            // =====================================
+
+            emailjs.sendForm(
+
+                "service_yorven",
+
+                "template_mq80bkq",
+
+                this
+
+            )
+
+            // =====================================
+            // 5. SI EL ENVÍO ES EXITOSO
+            // =====================================
+
+            .then(function(response) {
+
+                console.log("Correo enviado:", response);
+
+                mensaje.style.color = "#15803d";
+
+                mensaje.textContent =
+                    "¡Suscripción exitosa! Revisa tu correo electrónico.";
+
+                // Limpiar formulario
+                formulario.reset();
+
+            })
+
+
+            // =====================================
+            // 6. SI OCURRE UN ERROR
+            // =====================================
+
+            .catch(function(error) {
+
+                console.error("ERROR EMAILJS:", error);
+
+                console.error("ESTADO:", error.status);
+
+                console.error("DETALLE:", error.text);
+
+                mensaje.style.color = "#dc2626";
+
+                mensaje.textContent =
+                    error.text || "No se pudo completar la suscripción.";
+
+            })
+
+
+            // =====================================
+            // 7. RESTAURAR EL BOTÓN
+            // =====================================
+
+            .finally(function() {
+
+                boton.disabled = false;
+
+                boton.textContent = "SUSCRIBIRME";
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>
